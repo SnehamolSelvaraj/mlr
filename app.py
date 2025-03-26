@@ -6,19 +6,15 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Load trained model and label encoder
-model_path = "D:/mlr/model_pipeline.pkl"
-encoder_path = "D:/mlr/label_encoder.pkl"
-MODEL_FILE = "model.pkl"
+# Load trained model
+MODEL_PATH = "model_pipeline.pkl"
 
-if not os.path.exists(model_path) or not os.path.exists(encoder_path):
-    raise FileNotFoundError("⚠️ Model or encoder file not found! Train the model first.")
-
-with open(model_path, "rb") as file:
-    model_pipeline = pickle.load(file)
-
-with open(encoder_path, "rb") as file:
-    label_encoder = pickle.load(file)
+if os.path.exists(MODEL_PATH):
+    with open(MODEL_PATH, "rb") as f:
+        model = pickle.load(f)
+    print("✅ Model loaded successfully!")
+else:
+    raise FileNotFoundError(f"⚠️ Model file '{MODEL_PATH}' not found! Train and save the model before deploying.")
 
 @app.route("/")
 def home():
@@ -40,7 +36,7 @@ def predict():
         age = int(age)
         experience = int(experience)
         
-        # Create input DataFrame for the pipeline
+        # Create input DataFrame for the model pipeline
         input_data = pd.DataFrame([{
             'Age': age,
             'Experience (Years)': experience,
@@ -48,7 +44,7 @@ def predict():
         }])
 
         # Predict using the pipeline
-        prediction = model_pipeline.predict(input_data)[0]
+        prediction = model.predict(input_data)[0]
 
         return render_template("index.html", prediction=round(prediction, 2), age=age, experience=experience, education_level=education_level)
 
