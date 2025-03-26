@@ -9,6 +9,7 @@ app = Flask(__name__)
 # Load trained model and label encoder
 model_path = "D:/mlr/model_pipeline.pkl"
 encoder_path = "D:/mlr/label_encoder.pkl"
+MODEL_FILE = "model.pkl"
 
 if not os.path.exists(model_path) or not os.path.exists(encoder_path):
     raise FileNotFoundError("⚠️ Model or encoder file not found! Train the model first.")
